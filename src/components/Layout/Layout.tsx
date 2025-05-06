@@ -8,9 +8,9 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
   return (
-    <div className="flex flex-col min-h-screen my-0 scroll-smooth">
+    <div className="flex flex-col min-h-screen scroll-smooth">
       <Header />
-      <main className="flex grow-1 shrink-0 basis-auto mx-auto">{children}</main>
+      <main className="flex grow shrink-0 basis-auto mx-auto">{children}</main>
       <Footer />
     </div>
   );
