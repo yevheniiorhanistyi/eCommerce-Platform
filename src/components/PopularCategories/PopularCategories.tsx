@@ -33,13 +33,16 @@ const PopularCategories = (): JSX.Element => {
           <Link href={category.href} key={category.title} className="max-w-[420px]">
             <Card className="h-full cursor-pointer transition-shadow hover:shadow-lg py-5">
               <CardContent>
-                <Image
-                  className="mb-7"
-                  src={category.image}
-                  alt={category.title}
-                  width={364}
-                  height={246}
-                />
+                <div className="relative w-full h-[246px] mb-7">
+                  <Image
+                    src={category.image}
+                    alt={category.title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 364px"
+                    className="rounded-md"
+                  />
+                </div>
                 <h3 className="text-lg mb-2 sm:mb-4">{category.title}</h3>
                 <p className="text-base sm:-tracking-tight mb-1">{category.description}</p>
               </CardContent>
