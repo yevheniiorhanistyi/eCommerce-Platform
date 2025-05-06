@@ -20,14 +20,16 @@ const BrandCarousel = (): JSX.Element => {
         <CarouselContent>
           {brandLogos.map((logo, index) => (
             <CarouselItem key={index} className="basis-1/3 md:basis-1/5">
-              <div className="flex items-center justify-center h-24 px-4">
-                <Image
-                  src={`/images/brands/${logo}`}
-                  alt={logo.replace('.png', '')}
-                  width={100}
-                  height={80}
-                  className="object-contain max-h-16 grayscale hover:grayscale-0 transition"
-                />
+              <div className="relative flex items-center justify-center h-24 px-4">
+                <div className="relative w-[100px] h-[80px]">
+                  <Image
+                    src={`/images/brands/${logo}`}
+                    alt={logo.replace('.png', '')}
+                    fill
+                    style={{ objectFit: 'contain' }}
+                    sizes="(max-width: 768px) 33vw, (max-width: 1024px) 20vw, 100px"
+                  />
+                </div>
               </div>
             </CarouselItem>
           ))}
