@@ -23,7 +23,7 @@ const Footer = (): JSX.Element => {
         </div>
         <ul className="flex flex-row order-3 xl:order-0 xl:flex-col gap-2 sm:gap-4 self-center">
           {footerLinks.map(({ label, href }) => (
-            <li key={label} className="text-sm text-amber-50/80 hover:text-amber-50">
+            <li key={label} className="text-[13px] sm:text-sm text-amber-50/80 hover:text-amber-50">
               <Link href={href}>{label}</Link>
             </li>
           ))}
