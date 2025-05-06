@@ -40,8 +40,8 @@ const PopularCategories = (): JSX.Element => {
                   width={364}
                   height={246}
                 />
-                <h3 className="text-lg mb-4">{category.title}</h3>
-                <p className="text-base -tracking-tight mb-1">{category.description}</p>
+                <h3 className="text-lg mb-2 sm:mb-4">{category.title}</h3>
+                <p className="text-base sm:-tracking-tight mb-1">{category.description}</p>
               </CardContent>
             </Card>
           </Link>
