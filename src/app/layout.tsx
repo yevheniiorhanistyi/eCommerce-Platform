@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Mr_Dafoe } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
 import Layout from '@/components/Layout/Layout';
 import '@/styles/globals.css';
 
@@ -39,6 +40,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${mrDafoe.variable} antialiased`}
       >
         <Layout>{children}</Layout>
+        <Toaster position="bottom-left" />
       </body>
     </html>
   );
