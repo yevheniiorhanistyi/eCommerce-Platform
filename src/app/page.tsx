@@ -19,6 +19,13 @@ const Main = (): JSX.Element => {
       />
       <BrandCarousel />
       <PopularCategories />
+      <AnnouncementBanner
+        label="Let’s Get Social!"
+        text={[
+          'Sneaker inspo, styling tips, and cool community vibes — connect with us on your favorite platforms.'
+        ]}
+        socials={true}
+      />
     </div>
   );
 };
