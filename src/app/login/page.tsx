@@ -1,8 +1,13 @@
+import LoginForm from './LoginForm';
+
 const Login = (): JSX.Element => {
   return (
-    <main className="flex items-center justify-center p-8 sm:p-20">
-      <h1 className="text-2xl font-bold">Login Page</h1>
-    </main>
+    <div className="flex items-center justify-center px-4 sm:px-4 md:px-8">
+      <div className="w-full max-w-md bg-white px-6 sm:px-10 py-6 sm:py-8 shadow-lg rounded-xl">
+        <h1 className="text-2xl font-bold mb-4 text-center">Welcome to StepUp</h1>
+        <LoginForm />
+      </div>
+    </div>
   );
 };
 
