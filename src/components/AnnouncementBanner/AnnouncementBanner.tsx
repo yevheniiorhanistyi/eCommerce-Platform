@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { socialLogos } from '@/constants/socials';
+import { socialLogos } from '@/constants/constants';
 
 interface AnnouncementBannerProps {
   label?: string;
