@@ -49,10 +49,10 @@ const LoginForm = (): JSX.Element => {
               )}
             />
 
-            <div className="text-[10px] text-red-600 mt-1">
+            <div className="relative min-h-[1.25rem]">
               <ErrorMessage
                 name="email"
-                render={(msg) => <div className="text-red-600">{msg}</div>}
+                render={(msg) => <div className="absolute text-xs text-red-600 mt-1">{msg}</div>}
               />
             </div>
           </div>
@@ -89,15 +89,15 @@ const LoginForm = (): JSX.Element => {
               {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
 
-            <div className="text-[10px] text-red-600 mt-1">
+            <div className="relative min-h-[1.25rem]">
               <ErrorMessage
                 name="password"
-                render={(msg) => <div className="text-red-600">{msg}</div>}
+                render={(msg) => <div className="absolute text-xs text-red-600 mt-1">{msg}</div>}
               />
             </div>
           </div>
 
-          <Button type="submit" className="w-full mt-2">
+          <Button type="submit" className="w-full cursor-pointer">
             Login
           </Button>
 
