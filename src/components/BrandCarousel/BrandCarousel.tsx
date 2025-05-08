@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 
-import { brandLogos } from '@/constants/constants';
+import { BRAND_LOGOS } from '@/constants/constants';
 
 const BrandCarousel = (): JSX.Element => {
   return (
@@ -18,7 +18,7 @@ const BrandCarousel = (): JSX.Element => {
         className="w-full max-w-[1440px] mx-auto"
       >
         <CarouselContent>
-          {brandLogos.map((logo, index) => (
+          {BRAND_LOGOS.map((logo, index) => (
             <CarouselItem key={index} className="basis-1/3 md:basis-1/5">
               <div className="relative flex items-center justify-center h-24 px-4">
                 <div className="relative w-[100px] h-[80px]">

@@ -18,7 +18,7 @@ export const ANNOUNCEMENT_TEXTS = {
   }
 };
 
-export const brandLogos = [
+export const BRAND_LOGOS = [
   'asics.png',
   'converse.png',
   'ellesse.png',
@@ -28,7 +28,7 @@ export const brandLogos = [
   'puma.png'
 ];
 
-export const socialLogos = [
+export const SOCIAL_LOGOS = [
   'youtube.png',
   'facebook.png',
   'instagram.png',

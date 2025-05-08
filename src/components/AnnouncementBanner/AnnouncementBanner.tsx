@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { socialLogos } from '@/constants/constants';
+import { SOCIAL_LOGOS } from '@/constants/constants';
 
 interface AnnouncementBannerProps {
   label?: string;
@@ -19,7 +19,7 @@ const AnnouncementBanner = ({ label, text, socials }: AnnouncementBannerProps): 
       </div>
       {socials && (
         <div className="flex flex-row items-center gap-5">
-          {socialLogos.map((logo) => (
+          {SOCIAL_LOGOS.map((logo) => (
             <Link key={logo} href={'#'}>
               <div className="relative w-[18px] h-[18px]">
                 <Image
