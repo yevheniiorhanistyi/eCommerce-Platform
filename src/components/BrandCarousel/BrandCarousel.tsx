@@ -15,7 +15,7 @@ const BrandCarousel = (): JSX.Element => {
           loop: true
         }}
         plugins={[Autoplay({ delay: 3000 })]}
-        className="w-full max-w-6xl"
+        className="w-full max-w-[1440px] mx-auto"
       >
         <CarouselContent>
           {brandLogos.map((logo, index) => (
