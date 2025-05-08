@@ -3,7 +3,7 @@ import { Button } from '../ui/button';
 
 const HeroSection = (): JSX.Element => {
   return (
-    <section className="px-4 sm:px-10 py-5 relative w-full">
+    <section className="px-4 sm:px-10 py-5 relative w-full overflow-hidden">
       <div className="relative flex flex-col items-center justify-between gap-6 xl:gap-0 w-full h-full max-w-[1440px] min-h-[65vh] md:min-h-[80vh] mx-auto z-10">
         <div className="max-w-[280px] pt-10 self-start">
           <div className="flex flex-col gap-2 md:gap-3 mb-0 md:mb-4">
