@@ -21,7 +21,10 @@ const HeroSection = (): JSX.Element => {
           Step into comfort. Stay in style.
         </h2>
       </div>
-      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] md:w-[1100px] md:h-[800px] -translate-x-1/2 md:-translate-x-1/3 -translate-y-1/2 bg-[url('/images/hero-poster.png')] bg-center bg-cover bg-no-repeat z-0" />
+      <div
+        className="absolute top-1/2 left-1/2 w-[600px] h-[600px] md:w-[1100px] md:h-[800px] -translate-x-1/2 md:-translate-x-1/3 -translate-y-1/2 bg-[url('/images/hero-poster.png')] bg-center bg-cover bg-no-repeat z-0"
+        data-testid="hero-background"
+      />
     </section>
   );
 };
