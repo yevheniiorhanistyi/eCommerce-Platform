@@ -2,6 +2,7 @@ import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBann
 import HeroSection from '@/components/HeroSection/HeroSection';
 import BrandCarousel from '@/components/BrandCarousel/BrandCarousel';
 import PopularCategories from '@/components/PopularCategories/PopularCategories';
+import AllTimeFavorites from '@/components/AllTimeFavorites/AllTimeFavorites';
 
 const Main = (): JSX.Element => {
   return (
@@ -26,6 +27,7 @@ const Main = (): JSX.Element => {
         ]}
         socials={true}
       />
+      <AllTimeFavorites />
     </div>
   );
 };
