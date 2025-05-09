@@ -1,6 +1,6 @@
 'use client';
 
-import { Form, Formik, FormikProps } from 'formik';
+import { Form, Formik, FormikProps, ErrorMessage } from 'formik';
 
 import { defineStepper } from '@/components/ui/stepper';
 
@@ -9,16 +9,23 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 
+import { Eye, EyeOff } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { registerStep0Schema, registerStep1Schema } from './RegisterSchema';
+
+
 type RegisterFormProps = Pick<
   FormikProps<RegisterFormFields>,
-  'values' | 'handleChange' | 'handleBlur'
-> & { setFieldValue: (field: string, value: any) => void };
+  'values' | 'errors' | 'touched' | 'handleChange' | 'handleBlur'
+> & { setFieldValue: (field: string, value: unknown) => void };
 
 type Address = {
   country: string;
   city: string;
   street: string;
   postalCode: string;
+  useSame?: boolean;
 };
 
 type RegisterFormFields = {
@@ -28,54 +35,60 @@ type RegisterFormFields = {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-  phone: string;
-  address: Address;
-  shippingAddress?: Address | null;
-  useSame: boolean;
+  phoneNumber: string;
+  billingAddress: Address;
+  shippingAddress: Address;
 };
 
-const { Stepper } = defineStepper(
-  { id: 'step-0', title: 'Email & password' },
-  { id: 'step-1', title: 'Personal information' }
-);
-
 const RegisterForm = (): JSX.Element => {
-  // const [showPassword, setShowPassword] = useState(false);
-  // const [showConfirm, setShowConfirm] = useState(false);
+  const steps = [
+    { id: '0', title: 'Email & password', validation: registerStep0Schema },
+    { id: '1', title: 'Personal info', validation: registerStep1Schema }
+  ];
+
+  const { Stepper } = defineStepper(...steps);
 
   const initialValues: RegisterFormFields = {
     email: '',
     password: '',
     confirmPassword: '',
-
     firstName: '',
     lastName: '',
     dateOfBirth: '',
-    phone: '',
-    address: {
-      country: '',
-      city: '',
-      street: '',
-      postalCode: ''
+    phoneNumber: '',
+    billingAddress: {
+        country: '',
+        city: '',
+        street: '',
+        postalCode: ''
+      },
+    shippingAddress: {
+        country: '',
+        city: '',
+        street: '',
+        postalCode: '',
+        useSame: true,
     },
-    shippingAddress: null,
-    useSame: true
   };
 
   return (
     <Card className="flex items-center justify-center p-5 sm:px-[50px] sm:py-[35px] max-w-[502px] w-full shadow-lg rounded-x1">
       <CardHeader className="gap-0 px-0 w-full">
-        <CardTitle className="text-2xl font-bold text-center ">Create Your Account </CardTitle>
+        <CardTitle className="text-2xl font-bold text-center ">Create Your Account</CardTitle>
       </CardHeader>
-      <CardContent className="px-0 w-full">
-        <Formik
-          initialValues={initialValues}
-          onSubmit={(values) => console.log('Registration values:', values)}
-        >
-          {({ values, handleChange, handleBlur, setFieldValue }) => (
-            <Stepper.Provider>
-              {({ methods }) => (
-                <Form className="flex justify-self-center flex-col gap-3.5 max-w-[400px] w-full">
+      <CardContent className="flex flex-col gap-5 px-0 w-full">
+        <Stepper.Provider>
+          {({ methods }) => (
+            <Formik
+              initialValues={initialValues}
+              validationSchema={methods.current.validation}
+              onSubmit={(values) => {
+                console.log('Registration values:', values);
+
+              }}
+            >
+              {({ values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched,  validateForm, submitForm, isValid, dirty }) => (
+                <Form className="flex justify-self-center flex-col gap-7 max-w-[400px] w-full">
                   <Stepper.Navigation className="px-5">
                     {methods.all.map((step) => (
                       <Stepper.Step
@@ -85,56 +98,88 @@ const RegisterForm = (): JSX.Element => {
                       ></Stepper.Step>
                     ))}
                   </Stepper.Navigation>
+
                   {methods.switch({
-                    'step-0': (step) => (
+                    '0': (Step) => (
                       <AccountStep
                         values={values}
+                        errors={errors}
+                        touched={touched}
                         handleChange={handleChange}
                         handleBlur={handleBlur}
                         setFieldValue={setFieldValue}
                       />
                     ),
-                    'step-1': (step) => (
-                      <PersonalInfoStep
+                    '1': (Step) => (
+                      <PersonalInfoStep 
                         values={values}
+                        errors={errors}
+                        touched={touched}
                         handleChange={handleChange}
                         handleBlur={handleBlur}
                         setFieldValue={setFieldValue}
                       />
                     )
                   })}
-                  <Stepper.Controls className="flex justify-end mt-4">
+
+                  <Stepper.Controls className="flex justify-end">
                     <Button
                       className="cursor-pointer min-w-[90px]"
                       type="button"
-                      variant={methods.isFirst ? 'secondary' : 'default'}
-                      onClick={methods.prev}
+                      variant={methods.isFirst ? 'ghost' : 'default'}
+                      onClick={() => methods.prev()}
                       disabled={methods.isFirst}
                     >
-                      Previous
+                      {methods.isFirst ? '' : 'Previous'}
                     </Button>
                     <Button
                       className="cursor-pointer min-w-[90px]"
-                      type={methods.isFirst ? 'button' : 'submit'}
-                      onClick={methods.isLast? methods.reset : methods.next}
+                      type="button"
+                      disabled={!isValid || !dirty}
+                      onClick={async (e) => {
+                        const isValid = await validateForm();
+                        if (Object.keys(isValid).length === 0) {
+                          methods.isFirst ? methods.next() : submitForm();
+                        } else {
+                          markFieldsTouched(isValid, setFieldTouched);
+                        }
+                      }}
                     >
                       {methods.isFirst ? 'Next' : 'Register'}
                     </Button>
                   </Stepper.Controls>
                 </Form>
               )}
-            </Stepper.Provider>
+                
+            </Formik>
           )}
-        </Formik>
+        </Stepper.Provider>
+        <div className="text-center text-sm">
+          <span>Already have an account? </span>
+          <a
+            href="/login"
+            className="underline underline-offset-4 text-black hover:text-neutral-600 transition-colors font-bold"
+          >
+            Sign In.
+          </a>
+        </div>
       </CardContent>
     </Card>
   );
 };
 
-function AccountStep({ values, handleChange, handleBlur }: RegisterFormProps): JSX.Element {
+function AccountStep({
+  values,
+  errors,
+  touched,
+  handleChange,
+  handleBlur
+}: RegisterFormProps): JSX.Element {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   return (
     <>
-      <div>
+      <div className="relative">
         <label htmlFor="email" className="mb-1 font-medium text-sm md:text-base">
           Email
         </label>
@@ -146,35 +191,87 @@ function AccountStep({ values, handleChange, handleBlur }: RegisterFormProps): J
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            errors.email && touched.email
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name="email"
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      <div>
+      <div className="relative">
         <label htmlFor="password" className="mb-1 font-medium text-sm md:text-base">
           Password
         </label>
         <Input
           id="password"
           name="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           placeholder="Enter your password"
           value={values.password}
           onChange={handleChange}
           onBlur={handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            errors.password && touched.password
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black',
+            'pr-10'
+          )}
         />
+        <Button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute bottom-0 right-0 hover:cursor-pointer"
+        >
+          {showPassword ? <Eye /> : <EyeOff />}
+        </Button>
+        <div className="text-[12px]/[14px]/[14px] text-red-600 absolute">
+          <ErrorMessage
+            name="password"
+            render={(msg) => <div className="text-red-600 text-">{msg}</div>}
+          />
+        </div>
       </div>
-      <div>
+      <div className="relative">
         <label htmlFor="confirmPassword" className="mb-1 font-medium text-sm md:text-base">
           Confirm password
         </label>
         <Input
           id="confirmPassword"
           name="confirmPassword"
-          type="password"
+          type={showConfirmPassword ? 'text' : 'password'}
           placeholder="Confirm your password"
           value={values.confirmPassword}
           onChange={handleChange}
           onBlur={handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            errors.confirmPassword && touched.confirmPassword
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black',
+            'pr-10'
+          )}
         />
+        <Button
+          type="button"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          className="absolute bottom-0 right-0 hover:cursor-pointer"
+        >
+          {showConfirmPassword ? <Eye /> : <EyeOff />}
+        </Button>
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name="confirmPassword"
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
     </>
   );
@@ -182,13 +279,15 @@ function AccountStep({ values, handleChange, handleBlur }: RegisterFormProps): J
 
 function PersonalInfoStep({
   values,
+  errors,
+  touched,
   handleChange,
   handleBlur,
-  setFieldValue
+  setFieldValue,
 }: RegisterFormProps): JSX.Element {
   return (
     <>
-      <div>
+      <div className="relative">
         <label htmlFor="firstName" className="mb-1 font-medium text-sm md:text-base">
           First name
         </label>
@@ -200,9 +299,21 @@ function PersonalInfoStep({
           value={values.firstName}
           onChange={handleChange}
           onBlur={handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            errors.firstName && touched.firstName
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name="firstName"
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      <div>
+      <div className="relative">
         <label htmlFor="lastName" className="mb-1 font-medium text-sm md:text-base">
           Last name
         </label>
@@ -214,9 +325,21 @@ function PersonalInfoStep({
           value={values.lastName}
           onChange={handleChange}
           onBlur={handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            errors.lastName && touched.lastName
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name="lastName"
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      <div>
+      <div className="relative">
         <label htmlFor="dateOfBirth" className="mb-1 font-medium text-sm md:text-base">
           Date of birth
         </label>
@@ -228,37 +351,68 @@ function PersonalInfoStep({
           value={values.dateOfBirth}
           onChange={handleChange}
           onBlur={handleBlur}
-          className="placeholder:flex justify-between"
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            errors.dateOfBirth && touched.dateOfBirth
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name="dateOfBirth"
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      <div>
-        <label htmlFor="phone" className="mb-1 font-medium text-sm md:text-base">
+      <div className="relative">
+        <label htmlFor="phoneNumber" className="mb-1 font-medium text-sm md:text-base">
           Phone number
         </label>
         <Input
-          id="phone"
-          name="phone"
-          placeholder="Enter your phone"
-          value={values.phone}
+          id="phoneNumber"
+          name="phoneNumber"
+          placeholder="Enter your phone number"
+          value={values.phoneNumber}
           onChange={handleChange}
           onBlur={handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            errors.phoneNumber && touched.phoneNumber
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name="phoneNumber"
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      {renderAddressFields({ values, handleChange, handleBlur, setFieldValue }, 'address')}
+      {renderAddressFields(
+        { values, errors, touched, handleChange, handleBlur, setFieldValue },
+        'billingAddress'
+      )}
       <div className="flex items-center justify-between">
         <label htmlFor="useSame" className="font-medium">
           Use same address for shipping
         </label>
         <Switch
+          className='hover:cursor-pointer'
           id="useSame"
-          checked={values.useSame}
-          onCheckedChange={(checked) => setFieldValue('useSame', checked)}
+          name='useSame'
+          checked={values.shippingAddress.useSame}
+          onCheckedChange={(checked) => {
+            console.log(checked);
+            setFieldValue('shippingAddress.useSame', checked);
+          }}
         />
       </div>
-      {!values.useSame && (
+      {!values.shippingAddress.useSame && (
         <>
           {renderAddressFields(
-            { values, handleChange, handleBlur, setFieldValue },
+            { values, errors, touched, handleChange, handleBlur, setFieldValue },
             'shippingAddress'
           )}
         </>
@@ -268,15 +422,15 @@ function PersonalInfoStep({
 }
 
 function renderAddressFields(
-  data: RegisterFormProps,
-  label: 'address' | 'shippingAddress'
+  props: RegisterFormProps,
+  label: 'billingAddress' | 'shippingAddress'
 ): JSX.Element {
   return (
     <fieldset className="flex gap-3.5 flex-wrap">
       <legend className="basis-full text-lg font-bold w-full border-b-2 border-b-black not-last:mb-2.5">
-        {label === 'address' ? 'Billing Address' : 'Shipping Address'}
+        {label === 'billingAddress' ? 'Billing Address' : 'Shipping Address'}
       </legend>
-      <div className="sm:max-w-[190px] w-full">
+      <div className="sm:max-w-[190px] w-full relative">
         <label htmlFor={`${label}.country`} className="mb-1 font-medium text-sm md:text-base">
           Country
         </label>
@@ -284,12 +438,24 @@ function renderAddressFields(
           id={`${label}.country`}
           name={`${label}.country`}
           placeholder="Enter your country"
-          value={data.values[label]?.country}
-          onChange={data.handleChange}
-          onBlur={data.handleBlur}
+          value={props.values[label]?.country}
+          onChange={props.handleChange}
+          onBlur={props.handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            props.errors[label]?.country && props.touched[label]?.country
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name={`${label}.country`}
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      <div className="sm:max-w-[190px] w-full">
+      <div className="sm:max-w-[190px] w-full relative">
         <label htmlFor={`${label}.city`} className="mb-1 font-medium text-sm md:text-base">
           City
         </label>
@@ -297,12 +463,24 @@ function renderAddressFields(
           id={`${label}.city`}
           name={`${label}.city`}
           placeholder="Enter your city"
-          value={data.values[label]?.city}
-          onChange={data.handleChange}
-          onBlur={data.handleBlur}
+          value={props.values[label]?.city}
+          onChange={props.handleChange}
+          onBlur={props.handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            props.errors[label]?.city && props.touched[label]?.city
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name={`${label}.city`}
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      <div className="sm:max-w-[190px] w-full">
+      <div className="sm:max-w-[190px] w-full relative">
         <label htmlFor={`${label}.street`} className="mb-1 font-medium text-sm md:text-base">
           Street
         </label>
@@ -310,12 +488,24 @@ function renderAddressFields(
           id={`${label}.street`}
           name={`${label}.street`}
           placeholder="Enter your street"
-          value={data.values[label]?.street}
-          onChange={data.handleChange}
-          onBlur={data.handleBlur}
+          value={props.values[label]?.street}
+          onChange={props.handleChange}
+          onBlur={props.handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            props.errors[label]?.street && props.touched[label]?.street
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name={`${label}.street`}
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
-      <div className="sm:max-w-[190px] w-full">
+      <div className="sm:max-w-[190px] w-full relative">
         <label htmlFor={`${label}.postalCode`} className="mb-1 font-medium text-sm md:text-base">
           Postal code
         </label>
@@ -323,13 +513,37 @@ function renderAddressFields(
           id={`${label}.postalCode`}
           name={`${label}.postalCode`}
           placeholder="Enter your postal code"
-          value={data.values[label]?.postalCode}
-          onChange={data.handleChange}
-          onBlur={data.handleBlur}
+          value={props.values[label]?.postalCode}
+          onChange={props.handleChange}
+          onBlur={props.handleBlur}
+          className={cn(
+            '!text-sm !placeholder:text-sm',
+            props.errors[label]?.postalCode && props.touched[label]?.postalCode
+              ? 'border-red-500 focus:border-red-500'
+              : 'border-gray-300 focus:border-black'
+          )}
         />
+        <div className="text-[12px]/[14px] text-red-600">
+          <ErrorMessage
+            name={`${label}.postalCode`}
+            render={(msg) => <div className="text-red-600 absolute">{msg}</div>}
+          />
+        </div>
       </div>
     </fieldset>
   );
+}
+
+function markFieldsTouched(errors: Record<string, unknown>, setFieldTouched: (field: string, touched: boolean) => void) {
+  Object.entries(errors).forEach(([key, value]) => {
+    if (value && typeof value === 'object') {
+      Object.keys(value).forEach((nested) => {
+        setFieldTouched(`${key}.${nested}`, true);
+      });
+    } else {
+      setFieldTouched(key, true);
+    }
+  });
 }
 
 export default RegisterForm;
