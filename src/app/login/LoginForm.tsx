@@ -12,7 +12,11 @@ import { Eye, EyeOff } from 'lucide-react';
 import LoginSchema from './LoginSchema';
 import { useState } from 'react';
 
-const LoginForm = (): JSX.Element => {
+interface LoginFormProps {
+  setAuthentication: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const LoginForm = ({ setAuthentication }: LoginFormProps): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -28,6 +32,7 @@ const LoginForm = (): JSX.Element => {
           const result = await loginUser(values.email, values.password);
 
           sessionStorage.setItem('access_token', result.access_token);
+          setAuthentication(true);
           toast.success(`Logged in as ${values.email}`);
           router.push('/');
         } catch (error: unknown) {
