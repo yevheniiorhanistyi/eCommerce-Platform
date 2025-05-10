@@ -1,10 +1,11 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { Form, Formik, ErrorMessage } from 'formik';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import loginUser from '@/lib/auth';
 
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -13,6 +14,7 @@ import { useState } from 'react';
 
 const LoginForm = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   return (
     <Formik
@@ -21,9 +23,25 @@ const LoginForm = (): JSX.Element => {
         password: ''
       }}
       validationSchema={LoginSchema}
-      onSubmit={(values) => {
-        toast.success(`Logged in as ${values.email}`);
-        console.log(values);
+      onSubmit={async (values, { setSubmitting, setFieldError }) => {
+        try {
+          const result = await loginUser(values.email, values.password);
+
+          sessionStorage.setItem('access_token', result.access_token);
+          toast.success(`Logged in as ${values.email}`);
+          router.push('/');
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            const authError = error as Error & { code?: string };
+            if (authError.code === 'invalid_grant') {
+              setFieldError('password', 'Incorrect email or password');
+            } else {
+              toast.error(authError.message || 'Login failed. Please try again.');
+            }
+          }
+        } finally {
+          setSubmitting(false);
+        }
       }}
     >
       {({ values, errors, touched, handleChange, handleBlur }) => (
@@ -49,10 +67,11 @@ const LoginForm = (): JSX.Element => {
               )}
             />
 
-            <div className="text-[10px] text-red-600 mt-1">
+            <div className="relative min-h-[1.25rem]">
               <ErrorMessage
                 name="email"
-                render={(msg) => <div className="text-red-600">{msg}</div>}
+                component="div"
+                render={(msg) => <div className="absolute text-xs text-red-600 mt-1">{msg}</div>}
               />
             </div>
           </div>
@@ -89,20 +108,21 @@ const LoginForm = (): JSX.Element => {
               {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
 
-            <div className="text-[10px] text-red-600 mt-1">
+            <div className="relative min-h-[1.25rem]">
               <ErrorMessage
                 name="password"
-                render={(msg) => <div className="text-red-600">{msg}</div>}
+                component="div"
+                render={(msg) => <div className="absolute text-xs text-red-600 mt-1">{msg}</div>}
               />
             </div>
           </div>
 
-          <Button type="submit" className="w-full mt-2">
+          <Button type="submit" className="w-full cursor-pointer">
             Login
           </Button>
 
           <div className="text-center mt-2 text-sm">
-            <span>Don't have an account? </span>
+            <span>Don&apos;t have an account?</span>
             <a
               href="/register"
               className="underline underline-offset-4 text-black hover:text-neutral-600 transition-colors"
