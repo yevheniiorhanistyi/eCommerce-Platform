@@ -40,6 +40,7 @@ type CommonFormProps = {
   show?: boolean;
   onToggle?: () => void;
   withDatePicker?: boolean;
+  autoComplete?: string;
   onDatePick?: (value: string) => void;
 };
 

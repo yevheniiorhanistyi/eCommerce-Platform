@@ -44,9 +44,9 @@ const RegisterForm = (): JSX.Element => {
   };
 
   return (
-    <Card className="flex items-center justify-center p-5 sm:px-[50px] sm:py-[35px] max-w-[502px] w-full shadow-lg rounded-x1">
-      <CardHeader className="gap-0 px-0 w-full">
-        <CardTitle className="text-2xl font-bold text-center ">Create Your Account</CardTitle>
+    <Card className="flex items-center justify-center p-6 sm:px-[50px] sm:py-[35px] max-w-[512px] w-full shadow-lg rounded-x1 gap-4">
+      <CardHeader className="px-0 w-full">
+        <CardTitle className="text-3xl font-bold text-center ">Create Your Account</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-5 px-0 w-full">
         <Stepper.Provider>
@@ -72,7 +72,7 @@ const RegisterForm = (): JSX.Element => {
                 isValid,
                 dirty
               }) => (
-                <Form className="flex justify-self-center flex-col gap-4 max-w-[400px] w-full">
+                <Form className="flex justify-self-center flex-col gap-7 max-w-[410px] w-full">
                   <Stepper.Navigation className="px-5">
                     {methods.all.map((step) => (
                       <Stepper.Step
@@ -107,16 +107,21 @@ const RegisterForm = (): JSX.Element => {
 
                   <Stepper.Controls className="flex justify-end">
                     <Button
-                      className="cursor-pointer min-w-[90px]"
+                      className="flex-1/3 sm:flex-initial sm:min-w-[100px] cursor-pointer"
                       type="button"
                       variant={methods.isFirst ? 'ghost' : 'default'}
-                      onClick={() => methods.prev()}
+                      onClick={() => methods.afterPrev(async () => {
+                        const isValid = await validateForm();
+                        if (Object.keys(isValid).length !== 0) {
+                          markFieldsTouched(isValid, setFieldTouched);
+                        }
+                      })}
                       disabled={methods.isFirst}
                     >
                       {methods.isFirst ? '' : 'Previous'}
                     </Button>
                     <Button
-                      className="cursor-pointer min-w-[90px]"
+                      className="flex-1/3 sm:flex-initial sm:min-w-[100px] cursor-pointer"
                       type="button"
                       disabled={!isValid || !dirty}
                       onClick={async (e) => {

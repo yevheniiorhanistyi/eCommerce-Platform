@@ -97,8 +97,8 @@ function renderAddressFields(
     { name: 'postalCode', label: 'Postal code', placeholder: 'Enter your postal code' }
   ];
   return (
-    <fieldset className="flex gap-3.5 flex-wrap">
-      <legend className="basis-full text-lg font-bold w-full border-b-2 border-b-black not-last:mb-2.5">
+    <fieldset className="flex gap-7 flex-wrap">
+      <legend className="basis-full text-[16px] font-bold w-full border-b-2 border-b-black not-last:mb-2.5">
         {label === 'billingAddress' ? 'Billing Address' : 'Shipping Address'}
       </legend>
       {addressFields.map((field) => {
