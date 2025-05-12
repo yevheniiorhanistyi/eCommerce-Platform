@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { CircleUserRound, KeyRound, UserRoundPlus, ShoppingBasket } from 'lucide-react';
+import { ShoppingBasket } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
   NavigationMenu,
@@ -12,12 +12,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+import UserDropdownMenu from '../UserDropdownMenu/UserDropdownMenu';
 import DrawerMenu from '../DrawerMenu/DrawerMenu';
 
 const navLinks = [
@@ -67,35 +62,7 @@ const Header = (): JSX.Element => {
               </NavigationMenuItem>
             ))}
             <NavigationMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    aria-label="User menu"
-                    className="rounded-full cursor-pointer transition-colors duration-300"
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <CircleUserRound className="size-6" strokeWidth={1.6} />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem asChild>
-                    <Link className="flex items-center gap-2 w-full cursor-pointer" href={'/login'}>
-                      <KeyRound />
-                      <span className="text-base">Sign In</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      className="flex items-center gap-2 w-full cursor-pointer"
-                      href={'/register'}
-                    >
-                      <UserRoundPlus />
-                      <span className="text-base">Join Us</span>
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <UserDropdownMenu />
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href={'/cart'}>
