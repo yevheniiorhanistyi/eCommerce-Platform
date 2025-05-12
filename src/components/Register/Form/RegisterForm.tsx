@@ -11,6 +11,8 @@ import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import { RegisterFormFields } from '../types';
 import AccountStep from './AccountStep';
 import PersonalInfoStep from './PersonalInfoStep';
+import mapFormData from '../FormUserData';
+import registerUser from '../RegisterUser';
 
 const RegisterForm = (): JSX.Element => {
   const steps = [
@@ -31,13 +33,13 @@ const RegisterForm = (): JSX.Element => {
     billingAddress: {
       country: '',
       city: '',
-      street: '',
+      streetName: '',
       postalCode: ''
     },
     shippingAddress: {
       country: '',
       city: '',
-      street: '',
+      streetName: '',
       postalCode: '',
       useSame: true
     }
@@ -55,7 +57,7 @@ const RegisterForm = (): JSX.Element => {
               initialValues={initialValues}
               validationSchema={methods.current.validation}
               onSubmit={(values, { resetForm }) => {
-                console.log('Registration values:', values);
+                console.log('Registration values:', registerUser(values));
                 resetForm();
               }}
             >

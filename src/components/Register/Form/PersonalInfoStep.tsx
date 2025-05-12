@@ -93,7 +93,7 @@ function renderAddressFields(
   const addressFields = [
     { name: 'country', label: 'Country', placeholder: 'Enter your country' },
     { name: 'city', label: 'City', placeholder: 'Enter your city' },
-    { name: 'street', label: 'Street', placeholder: 'Enter your street' },
+    { name: 'streetName', label: 'Street', placeholder: 'Enter your street' },
     { name: 'postalCode', label: 'Postal code', placeholder: 'Enter your postal code' }
   ];
   return (

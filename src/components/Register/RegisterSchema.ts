@@ -47,7 +47,7 @@ const registerStep1Schema = Yup.object({
     city: Yup.string()
       .matches(/^[A-Za-zÀ-ÿ' -]+$/, 'Field must only contain letters')
       .required('City is required'),
-    street: Yup.string()
+    streetName: Yup.string()
       .matches(/^[A-Za-zÀ-ÿ0-9\s,'/\.\-]{2,}$/, 'Field must contain letters & numbers')
       .required('Street is required'),
     postalCode: Yup.string()
@@ -74,7 +74,7 @@ const registerStep1Schema = Yup.object({
       otherwise: (schema) => schema.notRequired()
     }),
 
-    street: Yup.string().when('useSame', {
+    streetName: Yup.string().when('useSame', {
       is: false,
       then: (schema) =>
         schema

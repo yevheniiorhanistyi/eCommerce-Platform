@@ -8,7 +8,7 @@ type RegisterFormProps = Pick<
 type Address = {
   country: string;
   city: string;
-  street: string;
+  streetName: string;
   postalCode: string;
   useSame?: boolean;
   [key: string]: string | boolean | undefined;
