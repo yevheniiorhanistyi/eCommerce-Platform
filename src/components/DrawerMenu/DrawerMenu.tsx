@@ -17,11 +17,12 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 
 interface DrawerMenuProps {
   navLinks: { href: string; label: string }[];
+  isAuthenticated: boolean;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DrawerMenu = ({ navLinks, isOpen, setIsOpen }: DrawerMenuProps) => {
+const DrawerMenu = ({ navLinks, isAuthenticated, isOpen, setIsOpen }: DrawerMenuProps) => {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen} direction="right">
       <DrawerTrigger asChild>
@@ -83,24 +84,29 @@ const DrawerMenu = ({ navLinks, isOpen, setIsOpen }: DrawerMenuProps) => {
           <p className="text-base sm:text-lg text-accent-foreground/90 -tracking-tighter">
             Become a StepUp Member for the best products, inspiration and stories in sport.
           </p>
-          <div className="flex items-center flex-wrap gap-4">
-            <Link
-              className="flex items-center gap-2"
-              href={'/login'}
-              onClick={() => setIsOpen(false)}
-            >
-              <Button className="text-base font-bold rounded-2xl cursor-pointer">Sign In</Button>
-            </Link>
-            <Link
-              className="flex items-center gap-2"
-              href={'/register'}
-              onClick={() => setIsOpen(false)}
-            >
-              <Button variant="outline" className="text-base font-bold rounded-2xl cursor-pointer">
-                Join Us
-              </Button>
-            </Link>
-          </div>
+          {!isAuthenticated && (
+            <div className="flex items-center flex-wrap gap-4">
+              <Link
+                className="flex items-center gap-2"
+                href={'/login'}
+                onClick={() => setIsOpen(false)}
+              >
+                <Button className="text-base font-bold rounded-2xl cursor-pointer">Sign In</Button>
+              </Link>
+              <Link
+                className="flex items-center gap-2"
+                href={'/register'}
+                onClick={() => setIsOpen(false)}
+              >
+                <Button
+                  variant="outline"
+                  className="text-base font-bold rounded-2xl cursor-pointer"
+                >
+                  Join Us
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

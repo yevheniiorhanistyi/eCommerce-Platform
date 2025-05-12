@@ -12,6 +12,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
+import { useAuth } from '@/context/AuthContext';
 import UserDropdownMenu from '../UserDropdownMenu/UserDropdownMenu';
 import DrawerMenu from '../DrawerMenu/DrawerMenu';
 
@@ -22,6 +23,7 @@ const navLinks = [
 
 const Header = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, setAuthentication } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,7 +64,10 @@ const Header = (): JSX.Element => {
               </NavigationMenuItem>
             ))}
             <NavigationMenuItem>
-              <UserDropdownMenu />
+              <UserDropdownMenu
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setAuthentication}
+              />
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href={'/cart'}>
@@ -77,7 +82,12 @@ const Header = (): JSX.Element => {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem className="sm:hidden">
-              <DrawerMenu navLinks={navLinks} isOpen={isOpen} setIsOpen={setIsOpen} />
+              <DrawerMenu
+                navLinks={navLinks}
+                isAuthenticated={isAuthenticated}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+              />
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
