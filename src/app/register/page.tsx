@@ -1,8 +1,10 @@
+import RegisterForm from '@/components/Register/Form/RegisterForm';
+
 const Register = (): JSX.Element => {
   return (
-    <main className="flex items-center justify-center p-8 sm:p-20">
-      <h1 className="text-2xl font-bold">Register Page</h1>
-    </main>
+    <div className="flex items-center justify-center p-4 sm:p-8 w-full">
+      <RegisterForm />
+    </div>
   );
 };
 
