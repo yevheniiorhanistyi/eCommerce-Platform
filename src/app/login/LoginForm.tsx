@@ -23,7 +23,7 @@ const LoginForm = (): JSX.Element => {
         password: ''
       }}
       validationSchema={LoginSchema}
-      onSubmit={async (values, { setSubmitting, setFieldError }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         try {
           const result = await loginUser(values.email, values.password);
 
@@ -31,12 +31,13 @@ const LoginForm = (): JSX.Element => {
           toast.success(`Logged in as ${values.email}`);
           router.push('/');
         } catch (error: unknown) {
+          
           if (error instanceof Error) {
             const authError = error as Error & { code?: string };
-            if (authError.code === 'invalid_grant') {
-              setFieldError('password', 'Incorrect email or password');
+            if (authError.code === 'invalid_customer_account_credentials') {
+              toast.error(authError.message);
             } else {
-              toast.error(authError.message || 'Login failed. Please try again.');
+              toast.error('Login failed. Please try again.');
             }
           }
         } finally {
