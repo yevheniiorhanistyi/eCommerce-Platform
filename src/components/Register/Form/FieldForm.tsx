@@ -11,6 +11,7 @@ const FormField = ({
   label,
   type = 'text',
   placeholder,
+  autoComplete,
   value,
   onChange,
   onBlur,
@@ -32,7 +33,7 @@ const FormField = ({
 
   return (
     <div className="relative grow shrink sm:basis-1/3">
-      <label htmlFor={name} className="mb-1 font-medium text-sm md:text-base">
+      <label htmlFor={name} className="mb-1 font-medium text-sm">
         {label}
       </label>
       <Input
@@ -43,6 +44,7 @@ const FormField = ({
         value={stringValue}
         onChange={onChange}
         onBlur={onBlur}
+        autoComplete={withToggle ? 'new-password' : "off"}
         readOnly={withDatePicker}
         className={cn(
           '!text-sm !placeholder:text-sm',
@@ -78,14 +80,14 @@ const FormField = ({
         <Button
           type="button"
           onClick={handleCalendarClick}
-          className="absolute bottom-0 right-0 hover:cursor-pointer"
+          className="absolute bottom-0 right-0 hover:cursor-pointer "
         >
           <Calendar />
         </Button>
       )}
 
       {error && touched && (
-        <div className="text-[12px]/[14px] text-red-600 absolute">
+        <div className="min-h-[1.25rem] text-xs text-red-600 absolute mt-1">
           <ErrorMessage name={name} />
         </div>
       )}
