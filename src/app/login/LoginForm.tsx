@@ -57,6 +57,7 @@ const LoginForm = (): JSX.Element => {
               name="email"
               type="email"
               placeholder="Enter your email"
+              autoComplete="email"
               value={values.email}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -88,6 +89,7 @@ const LoginForm = (): JSX.Element => {
               name="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
+              autoComplete="current-password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
