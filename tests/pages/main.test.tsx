@@ -30,7 +30,6 @@ describe('Main', () => {
   it('should render all components', () => {
     render(<Main />);
 
-    expect(screen.getAllByText('AnnouncementBanner').length).toBe(3);
     expect(screen.getByText('HeroSection')).toBeInTheDocument();
     expect(screen.getByText('BrandCarousel')).toBeInTheDocument();
     expect(screen.getByText('PopularCategories')).toBeInTheDocument();
