@@ -4,6 +4,7 @@ import HeroSection from '@/components/HeroSection/HeroSection';
 import BrandCarousel from '@/components/BrandCarousel/BrandCarousel';
 import PopularCategories from '@/components/PopularCategories/PopularCategories';
 import AllTimeFavorites from '@/components/AllTimeFavorites/AllTimeFavorites';
+import Benefits from '@/components/Benefits/Benefits';
 
 const Main = (): JSX.Element => {
   return (
@@ -16,11 +17,7 @@ const Main = (): JSX.Element => {
       />
       <BrandCarousel />
       <PopularCategories />
-      <AnnouncementBanner
-        label={ANNOUNCEMENT_TEXTS.socialCall.label}
-        text={ANNOUNCEMENT_TEXTS.socialCall.text}
-        socials={ANNOUNCEMENT_TEXTS.socialCall.socials}
-      />
+      <Benefits />
       <AllTimeFavorites />
     </div>
   );
