@@ -18,8 +18,8 @@ interface UserDropdownMenuProps {
 }
 
 const UserDropdownMenu = ({ isAuthenticated, setIsAuthenticated }: UserDropdownMenuProps) => {
-  const handleLogout = () => {
-    sessionStorage.removeItem('access_token');
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'DELETE' });
     setIsAuthenticated(false);
   };
 
