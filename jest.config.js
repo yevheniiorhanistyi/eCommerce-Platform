@@ -41,6 +41,8 @@ module.exports = {
     '^@/hooks(.*)$': '<rootDir>/hooks$1',
     '^@/mocks(.*)$': '<rootDir>/__mocks__$1',
     '^@/tests(.*)$': '<rootDir>/.jest$1',
-    '^@/app(.*)$': '<rootDir>/src/app$1'
+    '^@/app(.*)$': '<rootDir>/src/app$1',
+    '^@/constants/(.*)$': '<rootDir>/src/constants/$1',
+    '^@/(.*)$': '<rootDir>/src/$1'
   }
 };
