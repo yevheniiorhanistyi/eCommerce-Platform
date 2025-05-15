@@ -24,7 +24,7 @@ const LoginForm = (): JSX.Element => {
         password: ''
       }}
       validationSchema={LoginSchema}
-      onSubmit={async (values, { setSubmitting, setFieldError }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         try {
           const response = await fetch('/api/auth/login', {
             method: 'POST',
@@ -36,23 +36,20 @@ const LoginForm = (): JSX.Element => {
 
           const result = await response.json();
 
-          if (!response.ok) {
-            if (result.error === 'invalid_grant') {
-              setFieldError('password', 'Incorrect email or password');
-
-              return;
-            }
-
-            toast.error(result.error || 'Login failed. Please try again.');
-
-            return;
-          }
+          if (!response.ok) throw new Error(result.error || 'Login failed.');
 
           setAuthentication(true);
           toast.success(`Logged in as ${values.email}`);
           router.push('/');
-        } catch {
-          toast.error('Something went wrong. Please try again.');
+        } catch (error) {
+          if (error instanceof Error) {
+            const authError = error as Error & { code?: string };
+            if (authError.code === 'INVALID_CREDENTIALS') {
+              toast.error(authError.message);
+            } else {
+              toast.error('Login failed. Please try again.');
+            }
+          }
         } finally {
           setSubmitting(false);
         }
