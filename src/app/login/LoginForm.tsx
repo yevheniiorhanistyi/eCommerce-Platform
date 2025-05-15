@@ -70,6 +70,7 @@ const LoginForm = (): JSX.Element => {
               name="email"
               type="email"
               placeholder="Enter your email"
+              autoComplete="email"
               value={values.email}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -101,6 +102,7 @@ const LoginForm = (): JSX.Element => {
               name="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
+              autoComplete="current-password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -116,7 +118,7 @@ const LoginForm = (): JSX.Element => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-8.5 text-gray-600 hover:cursor-pointer"
+              className="rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-3 py-2 absolute bottom-5 right-0 hover:cursor-pointer"
               tabIndex={-1}
             >
               {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -139,7 +141,7 @@ const LoginForm = (): JSX.Element => {
             <span>Don&apos;t have an account?</span>
             <a
               href="/register"
-              className="underline underline-offset-4 text-black hover:text-neutral-600 transition-colors"
+              className="underline underline-offset-4 text-black hover:text-neutral-600 transition-colors font-bold ml-1"
             >
               Create one
             </a>
