@@ -22,10 +22,18 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setAuthentication] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('access_token');
-    if (token) {
-      setAuthentication(true);
-    }
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/status');
+        const data = await res.json();
+
+        setAuthentication(data.isAuthenticated);
+      } catch {
+        setAuthentication(false);
+      }
+    };
+
+    checkAuth();
   }, []);
 
   return (
