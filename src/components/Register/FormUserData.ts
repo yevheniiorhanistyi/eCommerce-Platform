@@ -19,8 +19,20 @@ const mapFormData = (formData: RegisterFormFields): CustomerDraft => {
 
   const useSame = shippingAddress.useSame === true;
 
-  const mappedBillingAddress = mapAddress(billingAddress);
-  const mappedShippingAddress = useSame ? mappedBillingAddress : mapAddress(shippingAddress);
+  const mappedBillingAddress = mapAddress(billingAddress, {
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    email: formData.email,
+    phone: formData.phoneNumber
+  });
+  const mappedShippingAddress = useSame
+    ? mappedBillingAddress
+    : mapAddress(shippingAddress, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phoneNumber
+      });
 
   const addresses: Address[] = useSame
     ? [mappedBillingAddress]
@@ -32,16 +44,27 @@ const mapFormData = (formData: RegisterFormFields): CustomerDraft => {
     firstName,
     lastName,
     dateOfBirth,
-    customerNumber: phoneNumber, //temporary used for Phone number storage
     addresses,
     defaultBillingAddress: 0,
     defaultShippingAddress: useSame ? 0 : 1,
     billingAddresses: [0],
-    shippingAddresses: [useSame ? 0 : 1]
+    shippingAddresses: [useSame ? 0 : 1],
+    custom: {
+      type: {
+        typeId: 'type',
+        key: 'customer-data'
+      },
+      fields: {
+        phoneNumber: phoneNumber
+      }
+    }
   };
 };
 
-function mapAddress(address: UserAddress): Address {
+function mapAddress(
+  address: UserAddress,
+  contact: { firstName: string; lastName: string; email?: string; phone?: string }
+): Address {
   const { useSame, ...rest } = address;
   void useSame;
   const countryCode = countries.getAlpha2Code(address.country, 'en');
@@ -52,7 +75,8 @@ function mapAddress(address: UserAddress): Address {
 
   return {
     ...rest,
-    country: countryCode
+    country: countryCode,
+    ...contact
   };
 }
 

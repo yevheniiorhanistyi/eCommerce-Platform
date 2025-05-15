@@ -1,4 +1,5 @@
 import { ErrorObject, ErrorResponse } from '@commercetools/platform-sdk';
+import { createAnonymousClient } from '@/services/commercetools/client/createAnonymousClient';
 
 interface CommercetoolsError {
   body: ErrorResponse;
@@ -30,4 +31,20 @@ function handleRegError(error: unknown): Error {
   return new Error('Something went wrong, try again.');
 }
 
-export default handleRegError;
+async function checkEmailAvailability(email: string): Promise<boolean> {
+  const apiRoot = createAnonymousClient();
+
+  try {
+    const response = await apiRoot
+      .customers()
+      .get({ queryArgs: { where: `email="${email}"` } })
+      .execute();
+
+    return response.body.total === 0;
+  } catch (error) {
+    const handledError = handleRegError(error);
+    throw handledError;
+  }
+}
+
+export { handleRegError, checkEmailAvailability };

@@ -9,14 +9,13 @@ import { defineStepper } from '@/components/ui/stepper';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
-import { createAnonymousClient } from '@/services/commercetools/client/createAnonymousClient';
 
 import { RegisterFormFields } from '../types';
 import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import AccountStep from './AccountStep';
 import PersonalInfoStep from './PersonalInfoStep';
-import registerUser from '../RegisterUser';
-import handleRegError from '../RigisterErrorHandler';
+import registerUser from '../registerUser';
+import { handleRegError, checkEmailAvailability } from '../registerUtils';
 
 const RegisterForm = (): JSX.Element => {
   const { setAuthentication } = useAuth();
@@ -212,22 +211,6 @@ export function markFieldsTouched(
       setFieldTouched(key, true);
     }
   });
-}
-
-async function checkEmailAvailability(email: string): Promise<boolean> {
-  const apiRoot = createAnonymousClient();
-
-  try {
-    const response = await apiRoot
-      .customers()
-      .get({ queryArgs: { where: `email="${email}"` } })
-      .execute();
-
-    return response.body.total === 0;
-  } catch (error) {
-    const handledError = handleRegError(error);
-    throw handledError;
-  }
 }
 
 export default RegisterForm;
