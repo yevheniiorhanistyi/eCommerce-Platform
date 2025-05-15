@@ -36,19 +36,16 @@ const LoginForm = (): JSX.Element => {
 
           const result = await response.json();
 
-          if (!response.ok) throw new Error(result.error || 'Login failed.');
+          if (!response.ok) throw new Error(result.error.message);
 
           setAuthentication(true);
           toast.success(`Logged in as ${values.email}`);
           router.push('/');
         } catch (error) {
           if (error instanceof Error) {
-            const authError = error as Error & { code?: string };
-            if (authError.code === 'INVALID_CREDENTIALS') {
-              toast.error(authError.message);
-            } else {
-              toast.error('Login failed. Please try again.');
-            }
+            toast.error(error.message || 'Login failed.');
+          } else {
+            toast.error('Unexpected error. Please try again.');
           }
         } finally {
           setSubmitting(false);
