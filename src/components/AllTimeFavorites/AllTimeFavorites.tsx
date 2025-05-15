@@ -4,7 +4,6 @@ import { ProductProjection } from '@commercetools/platform-sdk';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { getProductsByCategoryKey } from '@/services/getProductsByCategoryKey';
 import { Card, CardContent } from '../ui/card';
 
 const AllTimeFavorites = (): JSX.Element => {
@@ -13,12 +12,19 @@ const AllTimeFavorites = (): JSX.Element => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await getProductsByCategoryKey('all-time-favorites');
-        setProducts(response);
-      } catch (error) {
-        console.error(error);
+        const response = await fetch('/api/products/all-time-favorites');
+        if (!response.ok) throw new Error(`Failed to fetch products: ${response.statusText}`);
+        const data: ProductProjection[] = await response.json();
+        setProducts(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error(err.message);
+        } else {
+          console.error('Unknown error');
+        }
       }
     };
+
     fetchProducts();
   }, []);
 
