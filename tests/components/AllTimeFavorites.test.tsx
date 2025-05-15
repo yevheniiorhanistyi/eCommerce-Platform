@@ -1,15 +1,12 @@
 /* eslint-disable testing-library/no-unnecessary-act */
 import { render, screen, act } from '@testing-library/react';
 import AllTimeFavorites from '@/components/AllTimeFavorites/AllTimeFavorites';
-import { getProductsByCategoryKey } from '@/services/getProductsByCategoryKey';
-
-jest.mock('@/services/getProductsByCategoryKey');
-
-jest.mock('@/services/BuildClient', () => ({
-  getEnvVar: jest.fn().mockReturnValue('step-up')
-}));
 
 describe('AllTimeFavorites', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should render products correctly', async () => {
     const mockProducts = [
       {
@@ -30,32 +27,55 @@ describe('AllTimeFavorites', () => {
       }
     ];
 
-    (getProductsByCategoryKey as jest.Mock).mockResolvedValue(mockProducts);
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockProducts)
+      } as Response)
+    );
 
     await act(async () => {
       render(<AllTimeFavorites />);
     });
 
-    await screen.findByText('Product 1');
-    await screen.findByText('Product 2');
-
-    expect(screen.getByText('Product 1')).toBeInTheDocument();
-    expect(screen.getByText('Product 2')).toBeInTheDocument();
+    expect(await screen.findByText('Product 1')).toBeInTheDocument();
+    expect(await screen.findByText('Product 2')).toBeInTheDocument();
     expect(screen.getByText('10$')).toBeInTheDocument();
     expect(screen.getByText('20$')).toBeInTheDocument();
   });
 
   it('should render empty if no products found', async () => {
-    (getProductsByCategoryKey as jest.Mock).mockResolvedValue([]);
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([])
+      } as Response)
+    );
 
     await act(async () => {
       render(<AllTimeFavorites />);
     });
 
-    const product1 = screen.queryByText('Product 1');
-    const product2 = screen.queryByText('Product 2');
+    expect(screen.queryByText('Product 1')).toBeNull();
+    expect(screen.queryByText('Product 2')).toBeNull();
+  });
 
-    expect(product1).toBeNull();
-    expect(product2).toBeNull();
+  it('should handle fetch failure gracefully', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        statusText: 'Internal Server Error'
+      } as Response)
+    );
+
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    await act(async () => {
+      render(<AllTimeFavorites />);
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to fetch products: Internal Server Error');
+
+    consoleErrorSpy.mockRestore();
   });
 });
