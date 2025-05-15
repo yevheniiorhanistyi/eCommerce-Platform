@@ -1,9 +1,9 @@
 import { RegisterFormFields } from './types';
 import mapFormData from './FormUserData';
 import { Customer } from '@commercetools/platform-sdk';
-import handleError from '@/lib/handleError';
 import { createAnonymousClient } from '@/services/commercetools/client/createAnonymousClient';
 import { toast } from 'sonner';
+import handleRegError from './RigisterErrorHandler';
 
 const registerUser = async (userData: RegisterFormFields): Promise<Customer | undefined> => {
   const apiRoot = createAnonymousClient();
@@ -34,7 +34,7 @@ const registerUser = async (userData: RegisterFormFields): Promise<Customer | un
 
     return result.customer as Customer;
   } catch (error: unknown) {
-    toast.message(handleError(error).message);
+    toast.message(handleRegError(error).message);
   }
 };
 export default registerUser;

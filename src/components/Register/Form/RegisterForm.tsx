@@ -1,21 +1,22 @@
 'use client';
 
 import { Form, Formik } from 'formik';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { defineStepper } from '@/components/ui/stepper';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { createAnonymousClient } from '@/services/commercetools/client/createAnonymousClient';
 
-import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import { RegisterFormFields } from '../types';
+import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import AccountStep from './AccountStep';
 import PersonalInfoStep from './PersonalInfoStep';
 import registerUser from '../RegisterUser';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import handleError from '@/lib/handleError';
-import { useAuth } from '@/context/AuthContext';
+import handleRegError from '../RigisterErrorHandler';
 
 const RegisterForm = (): JSX.Element => {
   const { setAuthentication } = useAuth();
@@ -70,7 +71,7 @@ const RegisterForm = (): JSX.Element => {
                   toast.success(`Registration successful. Logged in as ${values.email}`);
                   router.push('/');
                 } catch (error: unknown) {
-                  toast.message(handleError(error).message);
+                  toast.message(handleRegError(error).message);
                 } finally {
                   setSubmitting(false);
                 }
@@ -83,6 +84,7 @@ const RegisterForm = (): JSX.Element => {
                 handleChange,
                 handleBlur,
                 setFieldValue,
+                setFieldError,
                 setFieldTouched,
                 validateForm,
                 submitForm,
@@ -147,7 +149,20 @@ const RegisterForm = (): JSX.Element => {
                         const isValid = await validateForm();
                         if (Object.keys(isValid).length === 0) {
                           if (methods.isFirst) {
-                            methods.next();
+                            try {
+                              const isEmailAvailable = await checkEmailAvailability(values.email);
+                              if (!isEmailAvailable) {
+                                setFieldError('email', 'User with this email already exists');
+                                toast.message(
+                                  'User with this email already exists, try to use another email or Sign In'
+                                );
+
+                                return;
+                              }
+                              methods.next();
+                            } catch (error) {
+                              toast.message(handleRegError(error).message);
+                            }
                           } else {
                             submitForm();
                           }
@@ -197,6 +212,22 @@ export function markFieldsTouched(
       setFieldTouched(key, true);
     }
   });
+}
+
+async function checkEmailAvailability(email: string): Promise<boolean> {
+  const apiRoot = createAnonymousClient();
+
+  try {
+    const response = await apiRoot
+      .customers()
+      .get({ queryArgs: { where: `email="${email}"` } })
+      .execute();
+
+    return response.body.total === 0;
+  } catch (error) {
+    const handledError = handleRegError(error);
+    throw handledError;
+  }
 }
 
 export default RegisterForm;
