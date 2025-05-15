@@ -22,7 +22,16 @@ export async function POST(req: NextRequest) {
     const tokenStore = tokenServiceInstance.get();
 
     if (!tokenStore?.token || !tokenStore?.refreshToken || !tokenStore?.expirationTime) {
-      return NextResponse.json({ error: 'invalid_grant' }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'TOKEN_STORE_INVALID',
+            message: 'Authentication token could not be retrieved.'
+          }
+        },
+        { status: 500 }
+      );
     }
 
     const response = NextResponse.json({ success: true });
@@ -49,9 +58,16 @@ export async function POST(req: NextRequest) {
     });
 
     return response;
-  } catch (error) {
-    console.error('[Login error]', error);
-
-    return NextResponse.json({ success: false, error: 'invalid_grant' }, { status: 401 });
+  } catch {
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: 'Incorrect email or password.'
+        }
+      },
+      { status: 401 }
+    );
   }
 }
