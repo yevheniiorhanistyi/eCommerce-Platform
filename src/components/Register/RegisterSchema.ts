@@ -35,7 +35,7 @@ const registerStep1Schema = Yup.object({
 
   phoneNumber: Yup.string()
     .matches(
-      /^[\+]?(\d{1,3})?[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{1,4}[\s\-]?\d{1,5}$/,
+      /^[+]?(\d{1,3})?[\s-]?\(?\d{1,4}\)?[\s-]?\d{1,4}[\s-]?\d{1,5}$/,
       'Enter a valid phone number'
     )
     .required('Phone number is required'),
@@ -48,10 +48,10 @@ const registerStep1Schema = Yup.object({
       .matches(/^[A-Za-zÀ-ÿ' -]+$/, 'Field must only contain letters')
       .required('City is required'),
     streetName: Yup.string()
-      .matches(/^[A-Za-zÀ-ÿ0-9\s,'/\.\-]{2,}$/, 'Field must contain letters & numbers')
+      .matches(/^[A-Za-zÀ-ÿ0-9\s,'/.-]{2,}$/, 'Field must contain letters & numbers')
       .required('Street is required'),
     postalCode: Yup.string()
-      .matches(/^[A-Za-z0-9\s\-]{3,10}$/, 'Invalid postal code format')
+      .matches(/^[A-Za-z0-9\s-]{3,10}$/, 'Invalid postal code format')
       .required('Postal code is required')
   }),
 
@@ -78,7 +78,7 @@ const registerStep1Schema = Yup.object({
       is: false,
       then: (schema) =>
         schema
-          .matches(/^[A-Za-zÀ-ÿ0-9\s,'\.\-]{2,}$/, 'Field must contain letters and numbers')
+          .matches(/^[A-Za-zÀ-ÿ0-9\s,'.-]{2,}$/, 'Field must contain letters and numbers')
           .required('Street is required'),
       otherwise: (schema) => schema.notRequired()
     }),
@@ -87,7 +87,7 @@ const registerStep1Schema = Yup.object({
       is: false,
       then: (schema) =>
         schema
-          .matches(/^[A-Za-z0-9\s\-]{3,10}$/, 'Invalid postal code format')
+          .matches(/^[A-Za-z0-9\s-]{3,10}$/, 'Invalid postal code format')
           .required('Postal code is required'),
       otherwise: (schema) => schema.notRequired()
     }),

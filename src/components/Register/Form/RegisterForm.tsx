@@ -11,10 +11,16 @@ import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import { RegisterFormFields } from '../types';
 import AccountStep from './AccountStep';
 import PersonalInfoStep from './PersonalInfoStep';
-import mapFormData from '../FormUserData';
 import registerUser from '../RegisterUser';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import handleError from '@/lib/handleError';
+import { useAuth } from '@/context/AuthContext';
 
 const RegisterForm = (): JSX.Element => {
+  const { setAuthentication } = useAuth();
+  const router = useRouter();
+
   const steps = [
     { id: '0', title: 'Email & password', validation: registerStep0Schema },
     { id: '1', title: 'Personal info', validation: registerStep1Schema }
@@ -56,9 +62,18 @@ const RegisterForm = (): JSX.Element => {
             <Formik
               initialValues={initialValues}
               validationSchema={methods.current.validation}
-              onSubmit={(values, { resetForm }) => {
-                console.log('Registration values:', registerUser(values));
-                resetForm();
+              onSubmit={async (values: RegisterFormFields, { setSubmitting }) => {
+                try {
+                  await registerUser(values);
+
+                  setAuthentication(true);
+                  toast.success(`Registration successful. Logged in as ${values.email}`);
+                  router.push('/');
+                } catch (error: unknown) {
+                  toast.message(handleError(error).message);
+                } finally {
+                  setSubmitting(false);
+                }
               }}
             >
               {({
@@ -85,7 +100,7 @@ const RegisterForm = (): JSX.Element => {
                     ))}
                   </Stepper.Navigation>
                   {methods.switch({
-                    '0': (Step) => (
+                    '0': () => (
                       <AccountStep
                         values={values}
                         errors={errors}
@@ -95,7 +110,7 @@ const RegisterForm = (): JSX.Element => {
                         setFieldValue={setFieldValue}
                       />
                     ),
-                    '1': (Step) => (
+                    '1': () => (
                       <PersonalInfoStep
                         values={values}
                         errors={errors}
@@ -112,12 +127,14 @@ const RegisterForm = (): JSX.Element => {
                       className="flex-1/3 sm:flex-initial sm:min-w-[100px] cursor-pointer"
                       type="button"
                       variant={methods.isFirst ? 'ghost' : 'default'}
-                      onClick={() => methods.afterPrev(async () => {
-                        const isValid = await validateForm();
-                        if (Object.keys(isValid).length !== 0) {
-                          markFieldsTouched(isValid, setFieldTouched);
-                        }
-                      })}
+                      onClick={() =>
+                        methods.afterPrev(async () => {
+                          const isValid = await validateForm();
+                          if (Object.keys(isValid).length !== 0) {
+                            markFieldsTouched(isValid, setFieldTouched);
+                          }
+                        })
+                      }
                       disabled={methods.isFirst}
                     >
                       {methods.isFirst ? '' : 'Previous'}
@@ -126,10 +143,14 @@ const RegisterForm = (): JSX.Element => {
                       className="flex-1/3 sm:flex-initial sm:min-w-[100px] cursor-pointer"
                       type="button"
                       disabled={!isValid || !dirty}
-                      onClick={async (e) => {
+                      onClick={async () => {
                         const isValid = await validateForm();
                         if (Object.keys(isValid).length === 0) {
-                          methods.isFirst ? methods.next() : submitForm();
+                          if (methods.isFirst) {
+                            methods.next();
+                          } else {
+                            submitForm();
+                          }
                         } else {
                           markFieldsTouched(isValid, setFieldTouched);
                         }

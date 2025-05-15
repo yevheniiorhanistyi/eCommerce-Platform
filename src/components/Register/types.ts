@@ -5,7 +5,7 @@ type RegisterFormProps = Pick<
   'values' | 'errors' | 'touched' | 'handleChange' | 'handleBlur'
 > & { setFieldValue: (field: string, value: unknown) => void };
 
-type Address = {
+type UserAddress = {
   country: string;
   city: string;
   streetName: string;
@@ -22,8 +22,8 @@ type RegisterFormFields = {
   lastName: string;
   dateOfBirth: string;
   phoneNumber: string;
-  billingAddress: Address;
-  shippingAddress: Address;
+  billingAddress: UserAddress;
+  shippingAddress: UserAddress;
 };
 
 type CommonFormProps = {
@@ -44,4 +44,4 @@ type CommonFormProps = {
   onDatePick?: (value: string) => void;
 };
 
-export type { RegisterFormProps, Address, RegisterFormFields, CommonFormProps };
+export type { RegisterFormProps, UserAddress, RegisterFormFields, CommonFormProps };

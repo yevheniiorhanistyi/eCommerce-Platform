@@ -11,7 +11,6 @@ const FormField = ({
   label,
   type = 'text',
   placeholder,
-  autoComplete,
   value,
   onChange,
   onBlur,
@@ -44,7 +43,7 @@ const FormField = ({
         value={stringValue}
         onChange={onChange}
         onBlur={onBlur}
-        autoComplete={withToggle ? 'new-password' : "off"}
+        autoComplete={withToggle ? 'new-password' : 'off'}
         readOnly={withDatePicker}
         className={cn(
           '!text-sm !placeholder:text-sm',
