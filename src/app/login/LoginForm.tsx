@@ -1,23 +1,20 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Form, Formik, ErrorMessage } from 'formik';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import loginUser from '@/lib/auth';
 
 import { Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 import LoginSchema from './LoginSchema';
-import { useState } from 'react';
 
-interface LoginFormProps {
-  setAuthentication: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const LoginForm = ({ setAuthentication }: LoginFormProps): JSX.Element => {
+const LoginForm = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
+  const { setAuthentication } = useAuth();
   const router = useRouter();
 
   return (
@@ -29,21 +26,33 @@ const LoginForm = ({ setAuthentication }: LoginFormProps): JSX.Element => {
       validationSchema={LoginSchema}
       onSubmit={async (values, { setSubmitting, setFieldError }) => {
         try {
-          const result = await loginUser(values.email, values.password);
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(values)
+          });
 
-          sessionStorage.setItem('access_token', result.access_token);
+          const result = await response.json();
+
+          if (!response.ok) {
+            if (result.error === 'invalid_grant') {
+              setFieldError('password', 'Incorrect email or password');
+
+              return;
+            }
+
+            toast.error(result.error || 'Login failed. Please try again.');
+
+            return;
+          }
+
           setAuthentication(true);
           toast.success(`Logged in as ${values.email}`);
           router.push('/');
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            const authError = error as Error & { code?: string };
-            if (authError.code === 'invalid_grant') {
-              setFieldError('password', 'Incorrect email or password');
-            } else {
-              toast.error(authError.message || 'Login failed. Please try again.');
-            }
-          }
+        } catch {
+          toast.error('Something went wrong. Please try again.');
         } finally {
           setSubmitting(false);
         }
