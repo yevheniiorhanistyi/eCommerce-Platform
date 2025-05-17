@@ -14,7 +14,7 @@ import { RegisterFormFields } from '../types';
 import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import AccountStep from './AccountStep';
 import PersonalInfoStep from './PersonalInfoStep';
-import registerUser from '../registerUser';
+import registerUser from '../RegisterUser';
 import { handleRegError, checkEmailAvailability } from '../registerUtils';
 
 const RegisterForm = (): JSX.Element => {

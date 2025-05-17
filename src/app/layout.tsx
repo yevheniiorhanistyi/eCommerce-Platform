@@ -1,17 +1,14 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Mr_Dafoe } from 'next/font/google';
+import { Montserrat, Mr_Dafoe } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import Layout from '@/components/Layout/Layout';
+import { AuthContextProvider } from '@/context/AuthContext';
 import '@/styles/globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin']
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin']
+const montserrat = Montserrat({
+  variable: '--font-montserrat',
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 });
 
 const mrDafoe = Mr_Dafoe({
@@ -36,10 +33,10 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${mrDafoe.variable} antialiased`}
-      >
-        <Layout>{children}</Layout>
+      <body className={`${montserrat.variable} ${mrDafoe.variable} antialiased`}>
+        <AuthContextProvider>
+          <Layout>{children}</Layout>
+        </AuthContextProvider>
         <Toaster position="bottom-left" />
       </body>
     </html>
