@@ -1,20 +1,7 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import LoginForm from './LoginForm';
 
-const Login = (): JSX.Element => {
-  const router = useRouter();
-
-  useEffect(() => {
-    const token = sessionStorage.getItem('access_token');
-    if (token) {
-      router.replace('/');
-    }
-  }, [router]);
-
+const Login = (): JSX.Element | null => {
   return (
     <div className="flex w-full items-center justify-center p-4 sm:p-8">
       <Card className="flex flex-col items-center justify-center p-5 sm:px-12 sm:py-8 w-full max-w-lg bg-white shadow-lg rounded-xl">
