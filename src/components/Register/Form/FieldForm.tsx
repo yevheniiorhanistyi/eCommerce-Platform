@@ -45,6 +45,7 @@ const FormField = ({
         onBlur={onBlur}
         autoComplete={withToggle ? 'new-password' : 'off'}
         readOnly={withDatePicker}
+        aria-label={label}
         className={cn(
           '!text-sm !placeholder:text-sm',
           error && touched
@@ -58,6 +59,7 @@ const FormField = ({
         <Button
           type="button"
           onClick={onToggle}
+          aria-label={`${label} visibility switch`}
           className="absolute bottom-0 right-0 hover:cursor-pointer"
         >
           {show ? <Eye /> : <EyeOff />}
@@ -69,6 +71,8 @@ const FormField = ({
           ref={dateInputRef}
           type="date"
           className="sr-only"
+          value={stringValue}
+          aria-label="Hidden date input"
           onChange={(e) => {
             onDatePick?.(e.target.value);
           }}
@@ -79,6 +83,7 @@ const FormField = ({
         <Button
           type="button"
           onClick={handleCalendarClick}
+          aria-label="Open calendar"
           className="absolute bottom-0 right-0 hover:cursor-pointer "
         >
           <Calendar />
