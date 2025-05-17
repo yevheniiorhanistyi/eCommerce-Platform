@@ -43,7 +43,7 @@ const Header = (): JSX.Element => {
         <Link className="flex items-center gap-2" href={'/'}>
           <Image
             className="h-[35px] w-[17px] sm:h-[51px] sm:w-[25px]"
-            src="/logo.png"
+            src="/images/logo.png"
             width={25}
             height={51}
             alt="Logo"
