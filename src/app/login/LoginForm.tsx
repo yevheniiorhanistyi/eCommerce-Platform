@@ -31,7 +31,6 @@ const LoginForm = (): JSX.Element => {
           toast.success(`Logged in as ${values.email}`);
           router.push('/');
         } catch (error: unknown) {
-          
           if (error instanceof Error) {
             const authError = error as Error & { code?: string };
             if (authError.code === 'invalid_customer_account_credentials') {
