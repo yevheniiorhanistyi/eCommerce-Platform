@@ -1,18 +1,26 @@
 'use client';
 
 import { Form, Formik } from 'formik';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { defineStepper } from '@/components/ui/stepper';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
-import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import { RegisterFormFields } from '../types';
+import { registerStep0Schema, registerStep1Schema } from '../RegisterSchema';
 import AccountStep from './AccountStep';
 import PersonalInfoStep from './PersonalInfoStep';
+import registerUser from '../RegisterUser';
+import { handleRegError, checkEmailAvailability } from '../registerUtils';
 
 const RegisterForm = (): JSX.Element => {
+  const { setAuthentication } = useAuth();
+  const router = useRouter();
+
   const steps = [
     { id: '0', title: 'Email & password', validation: registerStep0Schema },
     { id: '1', title: 'Personal info', validation: registerStep1Schema }
@@ -31,13 +39,13 @@ const RegisterForm = (): JSX.Element => {
     billingAddress: {
       country: '',
       city: '',
-      street: '',
+      streetName: '',
       postalCode: ''
     },
     shippingAddress: {
       country: '',
       city: '',
-      street: '',
+      streetName: '',
       postalCode: '',
       useSame: true
     }
@@ -54,9 +62,18 @@ const RegisterForm = (): JSX.Element => {
             <Formik
               initialValues={initialValues}
               validationSchema={methods.current.validation}
-              onSubmit={(values, { resetForm }) => {
-                console.log('Registration values:', values);
-                resetForm();
+              onSubmit={async (values: RegisterFormFields, { setSubmitting }) => {
+                try {
+                  await registerUser(values);
+
+                  setAuthentication(true);
+                  toast.success(`Registration successful. Logged in as ${values.email}`);
+                  router.push('/');
+                } catch (error: unknown) {
+                  toast.message(handleRegError(error).message);
+                } finally {
+                  setSubmitting(false);
+                }
               }}
             >
               {({
@@ -66,6 +83,7 @@ const RegisterForm = (): JSX.Element => {
                 handleChange,
                 handleBlur,
                 setFieldValue,
+                setFieldError,
                 setFieldTouched,
                 validateForm,
                 submitForm,
@@ -83,7 +101,7 @@ const RegisterForm = (): JSX.Element => {
                     ))}
                   </Stepper.Navigation>
                   {methods.switch({
-                    '0': (Step) => (
+                    '0': () => (
                       <AccountStep
                         values={values}
                         errors={errors}
@@ -93,7 +111,7 @@ const RegisterForm = (): JSX.Element => {
                         setFieldValue={setFieldValue}
                       />
                     ),
-                    '1': (Step) => (
+                    '1': () => (
                       <PersonalInfoStep
                         values={values}
                         errors={errors}
@@ -110,12 +128,14 @@ const RegisterForm = (): JSX.Element => {
                       className="flex-1/3 sm:flex-initial sm:min-w-[100px] cursor-pointer"
                       type="button"
                       variant={methods.isFirst ? 'ghost' : 'default'}
-                      onClick={() => methods.afterPrev(async () => {
-                        const isValid = await validateForm();
-                        if (Object.keys(isValid).length !== 0) {
-                          markFieldsTouched(isValid, setFieldTouched);
-                        }
-                      })}
+                      onClick={() =>
+                        methods.afterPrev(async () => {
+                          const isValid = await validateForm();
+                          if (Object.keys(isValid).length !== 0) {
+                            markFieldsTouched(isValid, setFieldTouched);
+                          }
+                        })
+                      }
                       disabled={methods.isFirst}
                     >
                       {methods.isFirst ? '' : 'Previous'}
@@ -124,10 +144,27 @@ const RegisterForm = (): JSX.Element => {
                       className="flex-1/3 sm:flex-initial sm:min-w-[100px] cursor-pointer"
                       type="button"
                       disabled={!isValid || !dirty}
-                      onClick={async (e) => {
+                      onClick={async () => {
                         const isValid = await validateForm();
                         if (Object.keys(isValid).length === 0) {
-                          methods.isFirst ? methods.next() : submitForm();
+                          if (methods.isFirst) {
+                            try {
+                              const isEmailAvailable = await checkEmailAvailability(values.email);
+                              if (!isEmailAvailable) {
+                                setFieldError('email', 'User with this email already exists');
+                                toast.message(
+                                  'User with this email already exists, try to use another email or Sign In'
+                                );
+
+                                return;
+                              }
+                              methods.next();
+                            } catch (error) {
+                              toast.message(handleRegError(error).message);
+                            }
+                          } else {
+                            submitForm();
+                          }
                         } else {
                           markFieldsTouched(isValid, setFieldTouched);
                         }
