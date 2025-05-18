@@ -33,64 +33,66 @@ const Benefits = (): JSX.Element => {
 
   return (
     <section className="bg-neutral-950 text-amber-50 py-8 px-4">
-      <h2 className="text-2xl text-center mb-8">Why Shop With Us ?</h2>
-      <div
-        className="
-          grid
-          grid-cols-1
-          sm:grid-cols-2
-          lg:grid-cols-4
-          gap-y-12
-          lg:gap-x-10
-          justify-items-center
-        "
-      >
-        {advantages.map((advantage, index) => (
-          <motion.div
-            key={index}
-            className="w-full max-w-xs [@media(max-width:730px)]:max-w-[250px] text-center space-y-4"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.4 }}
-            transition={{ staggerChildren: 0.2, delayChildren: index * 0.2 }}
-          >
+      <div className="w-full max-w-[1440px] mx-auto">
+        <h2 className="text-2xl text-center mb-8">Why Shop With Us ?</h2>
+        <div
+          className="
+        grid
+        grid-cols-1
+        sm:grid-cols-2
+        lg:grid-cols-4
+        gap-y-12
+        lg:gap-x-10
+        justify-items-center
+      "
+        >
+          {advantages.map((advantage, index) => (
             <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0 }
-              }}
-              transition={{ duration: 0.6 }}
+              key={index}
+              className="w-full max-w-xs [@media(max-width:730px)]:max-w-[250px] text-center space-y-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.4 }}
+              transition={{ staggerChildren: 0.2, delayChildren: index * 0.2 }}
             >
-              <Image
-                src={advantage.imageSrc}
-                alt={advantage.imageAlt}
-                width={65}
-                height={65}
-                className="mx-auto"
-              />
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.6 }}
+              >
+                <Image
+                  src={advantage.imageSrc}
+                  alt={advantage.imageAlt}
+                  width={65}
+                  height={65}
+                  className="mx-auto"
+                />
+              </motion.div>
+              <motion.h3
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.6 }}
+                className="text-xl font-semibold"
+              >
+                {advantage.title}
+              </motion.h3>
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.6 }}
+                className="text-sm"
+              >
+                {advantage.description}
+              </motion.p>
             </motion.div>
-            <motion.h3
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 }
-              }}
-              transition={{ duration: 0.6 }}
-              className="text-xl font-semibold"
-            >
-              {advantage.title}
-            </motion.h3>
-            <motion.p
-              variants={{
-                hidden: { opacity: 0, y: 10 },
-                visible: { opacity: 1, y: 0 }
-              }}
-              transition={{ duration: 0.6 }}
-              className="text-sm"
-            >
-              {advantage.description}
-            </motion.p>
-          </motion.div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
