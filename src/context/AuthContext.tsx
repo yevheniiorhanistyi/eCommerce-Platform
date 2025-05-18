@@ -1,11 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
-interface IAuthContextType {
-  isAuthenticated: boolean;
-  setAuthentication: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { IAuthContextType, IAuthStatus } from './types';
 
 const AuthContext = createContext<IAuthContextType | undefined>(undefined);
 
@@ -25,10 +21,18 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const checkAuth = async () => {
       try {
         const res = await fetch('/api/auth/status');
-        const data = await res.json();
+        if (!res.ok) throw new Error('Failed to fetch auth status');
+
+        const data: IAuthStatus = await res.json();
+
+        if (data.hasAccessToken && data.shouldRefresh) {
+          const refreshRes = await fetch('/api/auth/refresh', { method: 'POST' });
+          if (!refreshRes.ok) throw new Error('Failed to refresh token');
+        }
 
         setAuthentication(data.isAuthenticated);
       } catch {
+        await fetch('/api/auth/logout', { method: 'DELETE' });
         setAuthentication(false);
       }
     };
