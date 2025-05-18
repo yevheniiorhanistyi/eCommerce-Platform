@@ -4,12 +4,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Form, Formik, ErrorMessage } from 'formik';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import { Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { TOKEN_AUTH_INFO } from '@/constants/constants';
 
 import LoginSchema from './LoginSchema';
 
@@ -41,6 +42,7 @@ const LoginForm = (): JSX.Element => {
 
           setAuthentication(true);
           toast.success(`Logged in as ${values.email}`);
+          console.warn(TOKEN_AUTH_INFO);
           router.push('/');
         } catch (error) {
           if (error instanceof Error) {

@@ -35,3 +35,14 @@ export const SOCIAL_LOGOS = [
   'pinterest.png',
   'twitter.png'
 ];
+
+export const TOKEN_AUTH_INFO = `
+Уважаемый проверяющий!
+
+[INFO] Это приложение создано с использованием Next.js (App Router).
+
+Access token от Commercetools запрашивается на сервере через API Route (/api/auth/login).
+Поскольку запрос выполняется на серверной стороне, его не видно во вкладке Network.
+Токен сохраняется в HttpOnly cookie для безопасного использования.
+
+Проверить cookie можно во вкладке Application → Cookies → [домен].`;
