@@ -50,6 +50,13 @@ export async function POST(req: NextRequest) {
       path: '/'
     });
 
+    response.cookies.set('token_expires_at', String(tokenStore.expirationTime), {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: Math.floor((tokenStore.expirationTime - Date.now()) / 1000),
+      path: '/'
+    });
+
     response.cookies.set('is_authenticated', 'true', {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
