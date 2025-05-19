@@ -1,7 +1,6 @@
 import { Switch } from '@/components/ui/switch';
 import { RegisterFormProps } from '../types';
 import FormField from './FieldForm';
-import { markFieldsTouched } from './RegisterForm';
 
 function PersonalInfoStep(props: RegisterFormProps): JSX.Element {
   const { values, errors, touched, handleChange, handleBlur, setFieldValue } = props;
@@ -93,9 +92,10 @@ function renderAddressFields(
   const addressFields = [
     { name: 'country', label: 'Country', placeholder: 'Enter your country' },
     { name: 'city', label: 'City', placeholder: 'Enter your city' },
-    { name: 'street', label: 'Street', placeholder: 'Enter your street' },
+    { name: 'streetName', label: 'Street', placeholder: 'Enter your street' },
     { name: 'postalCode', label: 'Postal code', placeholder: 'Enter your postal code' }
   ];
+
   return (
     <fieldset className="flex gap-7 flex-wrap">
       <legend className="basis-full text-[16px] font-bold w-full border-b-2 border-b-black not-last:mb-2.5">

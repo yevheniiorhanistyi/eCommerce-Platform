@@ -9,7 +9,7 @@ module.exports = {
     '<rootDir>/.jest/test-utils.tsx',
     '<rootDir>/__mocks__/*'
   ],
-  transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$'],
+  transformIgnorePatterns: ['/node_modules/(?!(@stepperize)/)', '^.+\\.module\\.(css|sass|scss)$'],
 
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': [
