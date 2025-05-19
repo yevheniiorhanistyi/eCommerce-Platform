@@ -52,7 +52,7 @@ const Benefits = (): JSX.Element => {
               className="w-full max-w-xs [@media(max-width:730px)]:max-w-[250px] text-center space-y-4"
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.4 }}
+              viewport={{ once: true }}
               transition={{ staggerChildren: 0.2, delayChildren: index * 0.2 }}
             >
               <motion.div
