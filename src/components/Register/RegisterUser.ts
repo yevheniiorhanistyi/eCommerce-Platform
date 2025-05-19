@@ -3,7 +3,7 @@ import { createAnonymousClient } from '@/services/commercetools/client/createAno
 import { toast } from 'sonner';
 
 import { RegisterFormFields } from './types';
-import mapFormData from './formUserData';
+import mapFormData from './FormUserData';
 import { handleRegError } from './registerUtils';
 
 const registerUser = async (userData: RegisterFormFields): Promise<Customer | undefined> => {
