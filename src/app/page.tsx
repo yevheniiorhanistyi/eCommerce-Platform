@@ -1,8 +1,25 @@
+import { ANNOUNCEMENT_TEXTS } from '@/constants/constants';
+import AnnouncementBanner from '@/components/AnnouncementBanner/AnnouncementBanner';
+import HeroSection from '@/components/HeroSection/HeroSection';
+import BrandCarousel from '@/components/BrandCarousel/BrandCarousel';
+import PopularCategories from '@/components/PopularCategories/PopularCategories';
+import AllTimeFavorites from '@/components/AllTimeFavorites/AllTimeFavorites';
+import Benefits from '@/components/Benefits/Benefits';
+
 const Main = (): JSX.Element => {
   return (
-    <main className="flex items-center justify-center min-h-screen p-8 sm:p-20">
-      <h1 className="text-2xl font-bold">Main Page</h1>
-    </main>
+    <div className="w-full">
+      <AnnouncementBanner text={ANNOUNCEMENT_TEXTS.seasonalSale.text} />
+      <HeroSection />
+      <AnnouncementBanner
+        label={ANNOUNCEMENT_TEXTS.heroPromo.label}
+        text={ANNOUNCEMENT_TEXTS.heroPromo.text}
+      />
+      <BrandCarousel />
+      <PopularCategories />
+      <Benefits />
+      <AllTimeFavorites />
+    </div>
   );
 };
 
