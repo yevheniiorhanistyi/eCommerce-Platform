@@ -41,8 +41,8 @@ export const TOKEN_AUTH_INFO = `
 
 [INFO] Это приложение создано с использованием Next.js (App Router).
 
-Access token от Commercetools запрашивается на сервере через API Route (/api/auth/login).
-Поскольку запрос выполняется на серверной стороне, его не видно во вкладке Network.
-Токен сохраняется в HttpOnly cookie для безопасного использования.
+Access token от Commercetools запрашивается на сервере через API Route (/api/auth/login) с использованием SDK Commercetools. 
+SDK автоматически отправляет запрос к /customers/token, после чего токен сохраняется в HttpOnly cookie для безопасного использования.
 
-Проверить cookie можно во вкладке Application → Cookies → [домен].`;
+Поскольку запрос выполняется на серверной стороне, он не отображается во вкладке Network.
+Проверить наличие токена можно во вкладке Application → Cookies → [домен].`;
