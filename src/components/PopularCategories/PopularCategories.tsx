@@ -9,19 +9,19 @@ const PopularCategories = (): JSX.Element => {
       title: 'Training Shoes',
       description: 'Versatile performance shoes for gym sessions and daily workouts.',
       href: '/catalog',
-      image: '/images/category.png'
+      image: '/images/categories/training-category.jpg'
     },
     {
       title: 'Running Shoes',
       description: 'Enhance your performance with our top-notch running sneakers.',
       href: '/catalog',
-      image: '/images/category.png'
+      image: '/images/categories/running-category.jpg'
     },
     {
       title: 'Casual Sneakers',
       description: 'Find your perfect pair for everyday wear and comfort.',
       href: '/catalog',
-      image: '/images/category.png'
+      image: '/images/categories/casual-category.jpg'
     }
   ];
 
@@ -51,7 +51,7 @@ const PopularCategories = (): JSX.Element => {
               >
                 <Card className="h-full cursor-pointer transition-shadow hover:shadow-lg py-5">
                   <CardContent>
-                    <div className="relative w-full h-[246px] mb-7">
+                    <div className="relative w-full h-[246px] mb-5">
                       <Image
                         src={category.image}
                         alt={category.title}
@@ -61,7 +61,7 @@ const PopularCategories = (): JSX.Element => {
                         className="rounded-md"
                       />
                     </div>
-                    <h3 className="text-lg mb-2 sm:mb-4">{category.title}</h3>
+                    <h3 className="text-lg mb-2">{category.title}</h3>
                     <p className="text-base sm:-tracking-tight mb-1">{category.description}</p>
                   </CardContent>
                 </Card>
