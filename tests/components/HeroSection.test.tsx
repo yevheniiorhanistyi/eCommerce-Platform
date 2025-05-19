@@ -27,7 +27,7 @@ describe('HeroSection', () => {
   it('renders the background image', () => {
     render(<HeroSection />);
 
-    const backgroundImage = screen.getByTestId('hero-background');
-    expect(backgroundImage).toHaveClass("bg-[url('/images/hero-poster.png')]");
+    const videos = screen.getAllByTestId('hero-video');
+    expect(videos).toHaveLength(2);
   });
 });
