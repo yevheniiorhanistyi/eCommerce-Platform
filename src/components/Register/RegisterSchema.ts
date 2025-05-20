@@ -1,5 +1,9 @@
 import * as Yup from 'yup';
 
+const today = new Date();
+const MIN_AGE = 14;
+const minValidDate = new Date(today.getFullYear() - MIN_AGE, today.getMonth(), today.getDate());
+
 const registerStep0Schema = Yup.object({
   email: Yup.string()
     .trim()
@@ -30,7 +34,7 @@ const registerStep1Schema = Yup.object({
     .required('Last name is required'),
 
   dateOfBirth: Yup.date()
-    .max(new Date(), 'Date of birth cannot be in the future')
+    .max(minValidDate, `You must be at least ${MIN_AGE} years old`)
     .required('Date of birth is required'),
 
   phoneNumber: Yup.string()

@@ -74,6 +74,7 @@ const FormField = ({
           value={stringValue}
           aria-label="Hidden date input"
           onChange={(e) => {
+            onBlur?.({ target: { name } } as React.FocusEvent<HTMLInputElement>);
             onDatePick?.(e.target.value);
           }}
         />
