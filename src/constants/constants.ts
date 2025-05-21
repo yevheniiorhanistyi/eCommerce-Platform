@@ -1,3 +1,5 @@
+import { ISearchParams } from '@/types/types';
+
 export const ANNOUNCEMENT_TEXTS = {
   seasonalSale: {
     text: ['Seasonal savings are here! Shop our bestsellers before they are gone!']
@@ -35,3 +37,13 @@ export const SOCIAL_LOGOS = [
   'pinterest.png',
   'twitter.png'
 ];
+
+export const INITIAL_SEARCH_PARAMS: ISearchParams = {
+  offset: 0,
+  term: '',
+  sortValue: 'price asc',
+  colors: [],
+  sizes: [],
+  brands: [],
+  prices: [0, 1000]
+};
