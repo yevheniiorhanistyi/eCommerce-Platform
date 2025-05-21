@@ -40,13 +40,15 @@ const RegisterForm = (): JSX.Element => {
       country: '',
       city: '',
       streetName: '',
-      postalCode: ''
+      postalCode: '',
+      isDefault: true
     },
     shippingAddress: {
       country: '',
       city: '',
       streetName: '',
       postalCode: '',
+      isDefault: true,
       useSame: true
     }
   };

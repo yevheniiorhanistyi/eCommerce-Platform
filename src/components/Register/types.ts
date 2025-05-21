@@ -10,6 +10,7 @@ type UserAddress = {
   city: string;
   streetName: string;
   postalCode: string;
+  isDefault: boolean;
   useSame?: boolean;
   [key: string]: string | boolean | undefined;
 };
